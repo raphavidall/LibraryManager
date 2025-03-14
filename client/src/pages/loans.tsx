@@ -1,3 +1,4 @@
+
 import { NavBar } from "@/components/layout/nav-bar";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Loan, Book, User, insertLoanSchema } from "@shared/schema";
@@ -15,7 +16,6 @@ import { useToast } from "@/hooks/use-toast";
 import { format, addDays } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// Opções de duração do empréstimo
 const LOAN_DURATIONS = [
   { value: "3", label: "3 dias" },
   { value: "7", label: "7 dias" },
@@ -27,7 +27,7 @@ export default function Loans() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedDuration, setSelectedDuration] = useState("7"); // Padrão: 7 dias
+  const [selectedDuration, setSelectedDuration] = useState("7");
 
   const { data: loans, isLoading: loansLoading } = useQuery<Loan[]>({
     queryKey: ["/api/loans"],
@@ -47,9 +47,9 @@ export default function Loans() {
       userId: user?.id,
       bookId: undefined,
       loanDate: new Date().toISOString(),
-      dueDate: addDays(new Date(), 7).toISOString(), // Padrão: 7 dias
+      dueDate: addDays(new Date(), 7).toISOString(),
       returnDate: null
-    },
+    }
   });
 
   const createMutation = useMutation({
@@ -101,65 +101,30 @@ export default function Loans() {
     return users?.find((u) => u.id === userId)?.name || "Usuário Desconhecido";
   };
 
-  // Atualiza a data de devolução quando a duração é alterada
-  const handleDurationChange = (duration: string) => {
-    setSelectedDuration(duration);
-    const dueDate = addDays(new Date(), parseInt(duration));
-    form.setValue("dueDate", dueDate.toISOString());
-  };
-
-  const onSubmit = async (data: any) => {
-    try {
-      await createMutation.mutateAsync(data);
-    } catch (error) {
-      console.error("Erro ao criar empréstimo:", error);
-    }
+  const handleDurationChange = (value: string) => {
+    setSelectedDuration(value);
+    form.setValue("dueDate", addDays(new Date(), parseInt(value)).toISOString());
   };
 
   return (
     <div className="min-h-screen">
       <NavBar />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="container mx-auto py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Empréstimos</h1>
-          {(user?.role === "admin" || user?.role === "teacher") && (
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Novo Empréstimo
-                </Button>
-              </DialogTrigger>
+          <h1 className="text-3xl font-bold">Empréstimos</h1>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Novo Empréstimo
+              </Button>
+            </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Criar Novo Empréstimo</DialogTitle>
               </DialogHeader>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="bookId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Livro</FormLabel>
-                        <Select onValueChange={(value) => field.onChange(parseInt(value))}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione um livro" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {books?.filter((book) => book.available > 0).map((book) => (
-                              <SelectItem key={book.id} value={book.id.toString()}>
-                                {book.title}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <form onSubmit={form.handleSubmit(data => createMutation.mutate(data))} className="space-y-4">
                   {user?.role === "admin" && (
                     <FormField
                       control={form.control}
@@ -167,25 +132,49 @@ export default function Loans() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Usuário</FormLabel>
-                          <Select onValueChange={(value) => field.onChange(parseInt(value))}>
-                            <FormControl>
+                          <FormControl>
+                            <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
                               <SelectTrigger>
                                 <SelectValue placeholder="Selecione um usuário" />
                               </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {users?.map((user) => (
-                                <SelectItem key={user.id} value={user.id.toString()}>
-                                  {user.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                              <SelectContent>
+                                {users?.map((user) => (
+                                  <SelectItem key={user.id} value={user.id.toString()}>
+                                    {user.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   )}
+                  <FormField
+                    control={form.control}
+                    name="bookId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Livro</FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione um livro" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {books?.map((book) => (
+                                <SelectItem key={book.id} value={book.id.toString()}>
+                                  {book.title}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormItem>
                     <FormLabel>Duração do Empréstimo</FormLabel>
                     <Select value={selectedDuration} onValueChange={handleDurationChange}>
@@ -247,7 +236,8 @@ export default function Loans() {
                         onClick={() => returnMutation.mutate(loan.id)}
                         disabled={returnMutation.isPending}
                       >
-                        Devolver Livro
+                        {returnMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Devolver
                       </Button>
                     )}
                   </TableCell>
@@ -256,7 +246,7 @@ export default function Loans() {
             </TableBody>
           </Table>
         )}
-      </main>
+      </div>
     </div>
   );
 }
