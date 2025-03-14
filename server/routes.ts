@@ -55,10 +55,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Loans routes
   app.get("/api/loans", requireAuth, async (req, res) => {
     const loans = await storage.getAllLoans();
+    // Filter loans for non-admin users to show only their own
+    if (req.user?.role !== "admin" && req.user?.role !== "teacher") {
+      const userLoans = loans.filter(loan => loan.userId === req.user?.id);
+      return res.json(userLoans);
+    }
     res.json(loans);
   });
 
-  app.post("/api/loans", requireAuth, async (req, res) => {
+  app.post("/api/loans", requireAuth, requireRole(["admin", "teacher"]), async (req, res) => {
     const loanData = insertLoanSchema.parse(req.body);
     const loan = await storage.createLoan(loanData);
     res.status(201).json(loan);
