@@ -53,15 +53,15 @@ export default function Loans() {
   });
 
   const createMutation = useMutation({
-    mutationFn: async (formData: any) => {
+    mutationFn: async (data: any) => {
       const res = await apiRequest("POST", "/api/loans", {
-        userId: formData.userId,
-        bookId: formData.bookId,
-        loanDate: formData.loanDate,
-        dueDate: formData.dueDate,
+        userId: parseInt(data.userId),
+        bookId: parseInt(data.bookId),
+        loanDate: data.loanDate,
+        dueDate: data.dueDate,
         returnDate: null
       });
-      return res.json();
+      return await res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });

@@ -4,35 +4,35 @@ import { useAuth } from "@/hooks/use-auth";
 
 export function NavBar() {
   const { user, logoutMutation } = useAuth();
-  
+
   return (
     <nav className="border-b bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link href="/">
-              <a className="flex items-center text-xl font-bold text-primary">
+              <div className="flex items-center text-xl font-bold text-primary cursor-pointer">
                 Library System
-              </a>
+              </div>
             </Link>
-            
+
             <div className="hidden sm:ml-6 sm:flex sm:space-x-4">
               <Link href="/books">
-                <a className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900">
+                <div className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 cursor-pointer">
                   Books
-                </a>
+                </div>
               </Link>
               {user?.role === "admin" && (
                 <Link href="/users">
-                  <a className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900">
+                  <div className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 cursor-pointer">
                     Users
-                  </a>
+                  </div>
                 </Link>
               )}
               <Link href="/loans">
-                <a className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900">
+                <div className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 cursor-pointer">
                   Loans
-                </a>
+                </div>
               </Link>
             </div>
           </div>
