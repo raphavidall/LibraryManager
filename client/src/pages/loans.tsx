@@ -53,8 +53,14 @@ export default function Loans() {
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: Loan) => {
-      const res = await apiRequest("POST", "/api/loans", data);
+    mutationFn: async (formData: any) => {
+      const res = await apiRequest("POST", "/api/loans", {
+        userId: formData.userId,
+        bookId: formData.bookId,
+        loanDate: formData.loanDate,
+        dueDate: formData.dueDate,
+        returnDate: null
+      });
       return res.json();
     },
     onSuccess: () => {
@@ -63,6 +69,13 @@ export default function Loans() {
       form.reset();
       toast({ title: "Empréstimo criado com sucesso" });
     },
+    onError: (error: Error) => {
+      toast({ 
+        title: "Erro ao criar empréstimo",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   });
 
   const returnMutation = useMutation({
@@ -95,8 +108,12 @@ export default function Loans() {
     form.setValue("dueDate", dueDate.toISOString());
   };
 
-  const onSubmit = (data: typeof form.getValues) => {
-    createMutation.mutate(data as Loan);
+  const onSubmit = async (data: any) => {
+    try {
+      await createMutation.mutateAsync(data);
+    } catch (error) {
+      console.error("Erro ao criar empréstimo:", error);
+    }
   };
 
   return (
