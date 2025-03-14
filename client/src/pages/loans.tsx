@@ -55,8 +55,8 @@ export default function Loans() {
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
       const res = await apiRequest("POST", "/api/loans", {
-        userId: parseInt(data.userId),
-        bookId: parseInt(data.bookId),
+        userId: data.userId ? parseInt(data.userId) : user?.id,
+        bookId: data.bookId ? parseInt(data.bookId) : undefined,
         loanDate: data.loanDate,
         dueDate: data.dueDate,
         returnDate: null
