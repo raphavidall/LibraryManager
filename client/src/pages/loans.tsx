@@ -12,13 +12,22 @@ import { useAuth } from "@/hooks/use-auth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+// Opções de duração do empréstimo
+const LOAN_DURATIONS = [
+  { value: "3", label: "3 dias" },
+  { value: "7", label: "7 dias" },
+  { value: "15", label: "15 dias" },
+  { value: "30", label: "30 dias" },
+];
 
 export default function Loans() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedDuration, setSelectedDuration] = useState("7"); // Padrão: 7 dias
 
   const { data: loans, isLoading: loansLoading } = useQuery<Loan[]>({
     queryKey: ["/api/loans"],
@@ -37,7 +46,7 @@ export default function Loans() {
     defaultValues: {
       userId: user?.id,
       bookId: undefined,
-      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 2 weeks from now
+      dueDate: addDays(new Date(), 7).toISOString(), // Padrão: 7 dias
     },
   });
 
@@ -50,7 +59,7 @@ export default function Loans() {
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });
       setDialogOpen(false);
       form.reset();
-      toast({ title: "Loan created successfully" });
+      toast({ title: "Empréstimo criado com sucesso" });
     },
   });
 
@@ -63,16 +72,23 @@ export default function Loans() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });
-      toast({ title: "Book returned successfully" });
+      toast({ title: "Livro devolvido com sucesso" });
     },
   });
 
   const getBookTitle = (bookId: number) => {
-    return books?.find((b) => b.id === bookId)?.title || "Unknown Book";
+    return books?.find((b) => b.id === bookId)?.title || "Livro Desconhecido";
   };
 
   const getUserName = (userId: number) => {
-    return users?.find((u) => u.id === userId)?.name || "Unknown User";
+    return users?.find((u) => u.id === userId)?.name || "Usuário Desconhecido";
+  };
+
+  // Atualiza a data de devolução quando a duração é alterada
+  const handleDurationChange = (duration: string) => {
+    setSelectedDuration(duration);
+    const dueDate = addDays(new Date(), parseInt(duration));
+    form.setValue("dueDate", dueDate.toISOString());
   };
 
   return (
@@ -80,17 +96,17 @@ export default function Loans() {
       <NavBar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Loans</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Empréstimos</h1>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="h-4 w-4 mr-2" />
-                New Loan
+                Novo Empréstimo
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Create New Loan</DialogTitle>
+                <DialogTitle>Criar Novo Empréstimo</DialogTitle>
               </DialogHeader>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit((data) => createMutation.mutate(data))} className="space-y-4">
@@ -99,11 +115,11 @@ export default function Loans() {
                     name="bookId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Book</FormLabel>
+                        <FormLabel>Livro</FormLabel>
                         <Select onValueChange={(value) => field.onChange(parseInt(value))}>
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a book" />
+                              <SelectValue placeholder="Selecione um livro" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -124,11 +140,11 @@ export default function Loans() {
                       name="userId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>User</FormLabel>
+                          <FormLabel>Usuário</FormLabel>
                           <Select onValueChange={(value) => field.onChange(parseInt(value))}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select a user" />
+                                <SelectValue placeholder="Selecione um usuário" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -144,9 +160,26 @@ export default function Loans() {
                       )}
                     />
                   )}
+                  <FormItem>
+                    <FormLabel>Duração do Empréstimo</FormLabel>
+                    <Select value={selectedDuration} onValueChange={handleDurationChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a duração" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {LOAN_DURATIONS.map((duration) => (
+                          <SelectItem key={duration.value} value={duration.value}>
+                            {duration.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
                   <Button type="submit" className="w-full" disabled={createMutation.isPending}>
                     {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Create Loan
+                    Criar Empréstimo
                   </Button>
                 </form>
               </Form>
@@ -162,12 +195,12 @@ export default function Loans() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Book</TableHead>
-                <TableHead>Borrower</TableHead>
-                <TableHead>Loan Date</TableHead>
-                <TableHead>Due Date</TableHead>
-                <TableHead>Return Date</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>Livro</TableHead>
+                <TableHead>Usuário</TableHead>
+                <TableHead>Data do Empréstimo</TableHead>
+                <TableHead>Previsão de Entrega</TableHead>
+                <TableHead>Data de Devolução</TableHead>
+                <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -175,10 +208,10 @@ export default function Loans() {
                 <TableRow key={loan.id}>
                   <TableCell>{getBookTitle(loan.bookId)}</TableCell>
                   <TableCell>{getUserName(loan.userId)}</TableCell>
-                  <TableCell>{format(new Date(loan.loanDate), "PP")}</TableCell>
-                  <TableCell>{format(new Date(loan.dueDate), "PP")}</TableCell>
+                  <TableCell>{format(new Date(loan.loanDate), "dd/MM/yyyy")}</TableCell>
+                  <TableCell>{format(new Date(loan.dueDate), "dd/MM/yyyy")}</TableCell>
                   <TableCell>
-                    {loan.returnDate ? format(new Date(loan.returnDate), "PP") : "-"}
+                    {loan.returnDate ? format(new Date(loan.returnDate), "dd/MM/yyyy") : "-"}
                   </TableCell>
                   <TableCell>
                     {!loan.returnDate && (user?.role === "admin" || user?.id === loan.userId) && (
@@ -188,7 +221,7 @@ export default function Loans() {
                         onClick={() => returnMutation.mutate(loan.id)}
                         disabled={returnMutation.isPending}
                       >
-                        Return Book
+                        Devolver Livro
                       </Button>
                     )}
                   </TableCell>
