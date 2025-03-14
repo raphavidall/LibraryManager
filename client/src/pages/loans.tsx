@@ -46,12 +46,14 @@ export default function Loans() {
     defaultValues: {
       userId: user?.id,
       bookId: undefined,
+      loanDate: new Date().toISOString(),
       dueDate: addDays(new Date(), 7).toISOString(), // Padrão: 7 dias
+      returnDate: null
     },
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: typeof form.getValues) => {
+    mutationFn: async (data: Loan) => {
       const res = await apiRequest("POST", "/api/loans", data);
       return res.json();
     },
@@ -76,11 +78,13 @@ export default function Loans() {
     },
   });
 
-  const getBookTitle = (bookId: number) => {
+  const getBookTitle = (bookId: number | null) => {
+    if (!bookId) return "Livro Desconhecido";
     return books?.find((b) => b.id === bookId)?.title || "Livro Desconhecido";
   };
 
-  const getUserName = (userId: number) => {
+  const getUserName = (userId: number | null) => {
+    if (!userId) return "Usuário Desconhecido";
     return users?.find((u) => u.id === userId)?.name || "Usuário Desconhecido";
   };
 
@@ -89,6 +93,10 @@ export default function Loans() {
     setSelectedDuration(duration);
     const dueDate = addDays(new Date(), parseInt(duration));
     form.setValue("dueDate", dueDate.toISOString());
+  };
+
+  const onSubmit = (data: typeof form.getValues) => {
+    createMutation.mutate(data as Loan);
   };
 
   return (
@@ -109,7 +117,7 @@ export default function Loans() {
                 <DialogTitle>Criar Novo Empréstimo</DialogTitle>
               </DialogHeader>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit((data) => createMutation.mutate(data))} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
                     control={form.control}
                     name="bookId"
