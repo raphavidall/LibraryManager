@@ -1,4 +1,3 @@
-
 import { NavBar } from "@/components/layout/nav-bar";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Loan, Book, User, insertLoanSchema } from "@shared/schema";
@@ -54,6 +53,12 @@ export default function Loans() {
 
   const createMutation = useMutation({
       mutationFn: async (data: any) => {
+        console.log('Dados do empréstimo:', {
+          userId: data.userId ? parseInt(data.userId) : user?.id,
+          bookId: data.bookId ? Number(data.bookId) : undefined,
+          loanDate: data.loanDate,
+          dueDate: data.dueDate,
+        });
         const res = await apiRequest("POST", "/api/loans", {
           userId: data.userId ? parseInt(data.userId) : user?.id,
           bookId: data.bookId ? Number(data.bookId) : undefined, // Garante que seja número
