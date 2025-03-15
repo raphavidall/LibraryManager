@@ -127,6 +127,9 @@ export default function Loans() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Criar Novo Empréstimo</DialogTitle>
+                <DialogDescription>
+                  Preencha os dados abaixo para registrar um novo empréstimo.
+                </DialogDescription>
               </DialogHeader>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(data => createMutation.mutate(data))} className="space-y-4">
