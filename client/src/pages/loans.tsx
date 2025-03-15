@@ -53,16 +53,16 @@ export default function Loans() {
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const res = await apiRequest("POST", "/api/loans", {
-        userId: data.userId ? parseInt(data.userId) : user?.id,
-        bookId: data.bookId ? parseInt(data.bookId) : undefined,
-        loanDate: data.loanDate,
-        dueDate: data.dueDate,
-        returnDate: null
-      });
-      return await res.json();
-    },
+      mutationFn: async (data: any) => {
+        const res = await apiRequest("POST", "/api/loans", {
+          userId: data.userId ? parseInt(data.userId) : user?.id,
+          bookId: data.bookId ? Number(data.bookId) : undefined, // Garante que seja número
+          loanDate: data.loanDate,
+          dueDate: data.dueDate,
+          returnDate: null
+        });
+        return await res.json();
+      },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });
       setDialogOpen(false);
@@ -158,7 +158,9 @@ export default function Loans() {
                       <FormItem>
                         <FormLabel>Livro</FormLabel>
                         <FormControl>
-                          <Select onValueChange={field.onChange}>
+                          <Select
+                            onValueChange={(value) => field.onChange(Number(value))} // Converte para número
+                          >
                             <SelectTrigger>
                               <SelectValue placeholder="Selecione um livro" />
                             </SelectTrigger>
