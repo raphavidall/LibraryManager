@@ -202,8 +202,7 @@ export default function Loans() {
                       </SelectContent>
                     </Select>
                   </FormItem>
-                  <Button type="submit" className="w-full" disabled={createMutation.isPending}>
-                    {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  <Button type="submit" className="w-full">
                     Criar Empréstimo
                   </Button>
                 </form>
