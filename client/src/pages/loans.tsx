@@ -59,13 +59,7 @@ export default function Loans() {
           loanDate: data.loanDate,
           dueDate: data.dueDate,
         });
-        const res = await apiRequest("POST", "/api/loans", {
-          userId: data.userId ? parseInt(data.userId) : user?.id,
-          bookId: data.bookId ? Number(data.bookId) : undefined, // Garante que seja número
-          loanDate: data.loanDate,
-          dueDate: data.dueDate,
-          returnDate: null
-        });
+        const res = await apiRequest("POST", "/api/loans", data);
         return await res.json();
       },
     onSuccess: () => {
