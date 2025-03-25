@@ -2,9 +2,30 @@ import { NavBar } from "@/components/layout/nav-bar";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Loan, Book, User, insertLoanSchema } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
@@ -13,7 +34,13 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { format, addDays } from "date-fns";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const LOAN_DURATIONS = [
   { value: "3", label: "3 dias" },
@@ -47,21 +74,15 @@ export default function Loans() {
       bookId: undefined,
       loanDate: new Date().toISOString(),
       dueDate: addDays(new Date(), 7).toISOString(),
-      returnDate: null
-    }
+      returnDate: null,
+    },
   });
 
   const createMutation = useMutation({
-      mutationFn: async (data: any) => {
-        console.log('Dados do empréstimo:', {
-          userId: data.userId ? parseInt(data.userId) : user?.id,
-          bookId: data.bookId ? Number(data.bookId) : undefined,
-          loanDate: data.loanDate,
-          dueDate: data.dueDate,
-        });
-        const res = await apiRequest("POST", "/api/loans", data);
-        return await res.json();
-      },
+    mutationFn: async (data: typeof form.getValues) => {
+      const res = await apiRequest("POST", "/api/loans", data);
+      return await res.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });
       setDialogOpen(false);
@@ -69,12 +90,12 @@ export default function Loans() {
       toast({ title: "Empréstimo criado com sucesso" });
     },
     onError: (error: Error) => {
-      toast({ 
+      toast({
         title: "Erro ao criar empréstimo",
         description: error.message,
-        variant: "destructive"
+        variant: "destructive",
       });
-    }
+    },
   });
 
   const returnMutation = useMutation({
@@ -102,13 +123,16 @@ export default function Loans() {
 
   const handleDurationChange = (value: string) => {
     setSelectedDuration(value);
-    form.setValue("dueDate", addDays(new Date(), parseInt(value)).toISOString());
+    form.setValue(
+      "dueDate",
+      addDays(new Date(), parseInt(value)).toISOString(),
+    );
   };
 
   return (
     <div className="min-h-screen">
       <NavBar />
-      <div className="container mx-auto py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Empréstimos</h1>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -126,7 +150,12 @@ export default function Loans() {
                 </DialogDescription>
               </DialogHeader>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(data => createMutation.mutate(data))} className="space-y-4">
+                <form
+                  onSubmit={form.handleSubmit((data) =>
+                    createMutation.mutate(data),
+                  )}
+                  className="space-y-4"
+                >
                   {user?.role === "admin" && (
                     <FormField
                       control={form.control}
@@ -135,13 +164,19 @@ export default function Loans() {
                         <FormItem>
                           <FormLabel>Usuário</FormLabel>
                           <FormControl>
-                            <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value?.toString()}
+                            >
                               <SelectTrigger>
                                 <SelectValue placeholder="Selecione um usuário" />
                               </SelectTrigger>
                               <SelectContent>
                                 {users?.map((user) => (
-                                  <SelectItem key={user.id} value={user.id.toString()}>
+                                  <SelectItem
+                                    key={user.id}
+                                    value={user.id.toString()}
+                                  >
                                     {user.name}
                                   </SelectItem>
                                 ))}
@@ -161,14 +196,19 @@ export default function Loans() {
                         <FormLabel>Livro</FormLabel>
                         <FormControl>
                           <Select
-                            onValueChange={(value) => field.onChange(Number(value))} // Converte para número
+                            onValueChange={(value) =>
+                              field.onChange(Number(value))
+                            }
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Selecione um livro" />
                             </SelectTrigger>
                             <SelectContent>
                               {books?.map((book) => (
-                                <SelectItem key={book.id} value={book.id.toString()}>
+                                <SelectItem
+                                  key={book.id}
+                                  value={book.id.toString()}
+                                >
                                   {book.title}
                                 </SelectItem>
                               ))}
@@ -181,7 +221,10 @@ export default function Loans() {
                   />
                   <FormItem>
                     <FormLabel>Duração do Empréstimo</FormLabel>
-                    <Select value={selectedDuration} onValueChange={handleDurationChange}>
+                    <Select
+                      value={selectedDuration}
+                      onValueChange={handleDurationChange}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione a duração" />
@@ -189,7 +232,10 @@ export default function Loans() {
                       </FormControl>
                       <SelectContent>
                         {LOAN_DURATIONS.map((duration) => (
-                          <SelectItem key={duration.value} value={duration.value}>
+                          <SelectItem
+                            key={duration.value}
+                            value={duration.value}
+                          >
                             {duration.label}
                           </SelectItem>
                         ))}
@@ -226,30 +272,39 @@ export default function Loans() {
                 <TableRow key={loan.id}>
                   <TableCell>{getBookTitle(loan.bookId)}</TableCell>
                   <TableCell>{getUserName(loan.userId)}</TableCell>
-                  <TableCell>{format(new Date(loan.loanDate), "dd/MM/yyyy")}</TableCell>
-                  <TableCell>{format(new Date(loan.dueDate), "dd/MM/yyyy")}</TableCell>
                   <TableCell>
-                    {loan.returnDate ? format(new Date(loan.returnDate), "dd/MM/yyyy") : "-"}
+                    {format(new Date(loan.loanDate), "dd/MM/yyyy")}
                   </TableCell>
                   <TableCell>
-                    {!loan.returnDate && (user?.role === "admin" || user?.id === loan.userId) && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => returnMutation.mutate(loan.id)}
-                        disabled={returnMutation.isPending}
-                      >
-                        {returnMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Devolver
-                      </Button>
-                    )}
+                    {format(new Date(loan.dueDate), "dd/MM/yyyy")}
+                  </TableCell>
+                  <TableCell>
+                    {loan.returnDate
+                      ? format(new Date(loan.returnDate), "dd/MM/yyyy")
+                      : "-"}
+                  </TableCell>
+                  <TableCell>
+                    {!loan.returnDate &&
+                      (user?.role === "admin" || user?.id === loan.userId) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => returnMutation.mutate(loan.id)}
+                          disabled={returnMutation.isPending}
+                        >
+                          {returnMutation.isPending && (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          )}
+                          Devolver
+                        </Button>
+                      )}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         )}
-      </div>
+      </main>
     </div>
   );
 }
