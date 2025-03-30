@@ -49,11 +49,22 @@ export function setupAuth(app: Express) {
     new LocalStrategy(async (username, password, done) => {
       try {
         const user = await storage.getUserByUsername(username);
-        if (!user || !(await comparePasswords(password, user.password))) {
+        console.log("Login attempt:", { username, hasUser: !!user });
+        
+        if (!user) {
           return done(null, false, { message: "Invalid username or password" });
         }
+
+        const isValidPassword = await comparePasswords(password, user.password);
+        console.log("Password check:", { isValid: isValidPassword });
+
+        if (!isValidPassword) {
+          return done(null, false, { message: "Invalid username or password" });
+        }
+
         return done(null, user);
       } catch (err) {
+        console.error("Login error:", err);
         return done(err);
       }
     }),
@@ -71,6 +82,7 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
+      console.log("Register attempt:", req.body);
       const data = insertUserSchema.parse(req.body);
       
       const existingUser = await storage.getUserByUsername(data.username);
