@@ -1,3 +1,4 @@
+
 import { users, books, loans, type User, type Book, type Loan, type InsertUser, type InsertBook, type InsertLoan } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -22,8 +23,17 @@ export interface IStorage {
   getLoan(id: number): Promise<Loan | undefined>;
   getAllLoans(): Promise<Loan[]>;
   updateLoan(id: number, loan: Partial<InsertLoan>): Promise<Loan>;
+  
+  sessionStore: session.SessionStore;
+}
 
-  // Add sample books
+export class MemStorage implements IStorage {
+  private users: Map<number, User>;
+  private books: Map<number, Book>;
+  private loans: Map<number, Loan>;
+  private currentId: number;
+  sessionStore: session.SessionStore;
+
   constructor() {
     this.users = new Map();
     this.books = new Map();
@@ -53,27 +63,6 @@ export interface IStorage {
       author: "George Orwell",
       isbn: "9788535914849",
       quantity: 4
-    });
-  }
-
-  
-  sessionStore: session.SessionStore;
-}
-
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private books: Map<number, Book>;
-  private loans: Map<number, Loan>;
-  private currentId: number;
-  sessionStore: session.SessionStore;
-
-  constructor() {
-    this.users = new Map();
-    this.books = new Map();
-    this.loans = new Map();
-    this.currentId = 1;
-    this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000,
     });
   }
 
