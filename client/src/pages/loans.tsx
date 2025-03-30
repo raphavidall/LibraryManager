@@ -70,7 +70,7 @@ export default function Loans() {
   const form = useForm({
     resolver: zodResolver(insertLoanSchema),
     defaultValues: {
-      userId: user?.id ? Number(user.id) : undefined,
+      userId: user?.id ? parseInt(user.id.toString()) : undefined,
       bookId: undefined,
       loanDate: new Date().toISOString(),
       dueDate: addDays(new Date(), 7).toISOString(),
