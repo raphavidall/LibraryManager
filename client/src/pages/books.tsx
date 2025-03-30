@@ -44,7 +44,7 @@ export default function Books() {
       queryClient.invalidateQueries({ queryKey: ["/api/books"] });
       setDialogOpen(false);
       form.reset();
-      toast({ title: "Book created successfully" });
+      toast({ title: "Livro criado com sucesso" });
     },
   });
 
@@ -58,7 +58,7 @@ export default function Books() {
       setDialogOpen(false);
       setEditingBook(null);
       form.reset();
-      toast({ title: "Book updated successfully" });
+      toast({ title: "Livro atualizado com sucesso" });
     },
   });
 
@@ -68,7 +68,7 @@ export default function Books() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/books"] });
-      toast({ title: "Book deleted successfully" });
+      toast({ title: "Livro deletado com sucesso" });
     },
   });
 
@@ -105,7 +105,7 @@ export default function Books() {
                       name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Title</FormLabel>
+                          <FormLabel>Título</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -118,7 +118,7 @@ export default function Books() {
                       name="author"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Author</FormLabel>
+                          <FormLabel>Autor</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -144,7 +144,7 @@ export default function Books() {
                       name="quantity"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Quantity</FormLabel>
+                          <FormLabel>Quantidade</FormLabel>
                           <FormControl>
                             <Input type="number" min="1" {...field} />
                           </FormControl>
@@ -156,7 +156,7 @@ export default function Books() {
                       {(createMutation.isPending || updateMutation.isPending) && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      {editingBook ? "Update" : "Create"}
+                      {editingBook ? "Atualizar" : "Criar"}
                     </Button>
                   </form>
                 </Form>
@@ -173,13 +173,13 @@ export default function Books() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Author</TableHead>
+                <TableHead>Título</TableHead>
+                <TableHead>Autor</TableHead>
                 <TableHead>ISBN</TableHead>
-                <TableHead>Available</TableHead>
+                <TableHead>Disponível</TableHead>
                 <TableHead>Total</TableHead>
                 {(user?.role === "admin" || user?.role === "teacher") && (
-                  <TableHead className="w-[100px]">Actions</TableHead>
+                  <TableHead className="w-[100px]">Ações</TableHead>
                 )}
               </TableRow>
             </TableHeader>
@@ -210,7 +210,7 @@ export default function Books() {
                             variant="ghost"
                             size="sm"
                             onClick={() => {
-                              if (confirm("Are you sure you want to delete this book?")) {
+                              if (confirm("Tem certeza que deseja deletar este livro?")) {
                                 deleteMutation.mutate(book.id);
                               }
                             }}

@@ -81,7 +81,7 @@ export default function AuthPage() {
                     name="username"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nome de Usuário</FormLabel>
+                        <FormLabel>Usuário</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -118,7 +118,7 @@ export default function AuthPage() {
                     name="username"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nome de Usuário</FormLabel>
+                        <FormLabel>Usuário</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
