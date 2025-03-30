@@ -40,12 +40,13 @@ export const insertUserSchema = createInsertSchema(users).pick({
 });
 
 export const insertBookSchema = createInsertSchema(books);
-export const insertLoanSchema = createInsertSchema(loans).extend({
-  userId: z.number(),
-  bookId: z.number(),
+export const insertLoanSchema = createInsertSchema(loans, {
+  userId: (schema) => schema.userId.positive(),
+  bookId: (schema) => schema.bookId.positive(),
+}).extend({
   loanDate: z.string(),
   dueDate: z.string(),
-  returnDate: z.string().nullable(),
+  returnDate: z.string().nullable().optional(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
