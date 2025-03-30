@@ -15,7 +15,14 @@ export default function Users() {
   }
 
   const { data: users, isLoading } = useQuery<User[]>({
-    queryKey: ["/api/users"],
+    queryKey: ["users"],
+    queryFn: async () => {
+      const response = await fetch("/api/users");
+      if (!response.ok) {
+        throw new Error("Erro ao buscar usuários");
+      }
+      return response.json();
+    }
   });
 
   return (
