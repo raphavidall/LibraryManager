@@ -63,7 +63,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(loans);
   });
 
-  app.post("/api/loans", requireAuth, requireRole(["admin", "teacher"]), async (req, res) => {
+  app.post("/api/loans", requireAuth, async (req, res) => {
     const loanData = insertLoanSchema.parse(req.body);
     const loan = await storage.createLoan(loanData);
     res.status(201).json(loan);

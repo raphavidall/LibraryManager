@@ -286,7 +286,7 @@ export default function Loans() {
                   </TableCell>
                   <TableCell>
                     {!loan.returnDate &&
-                      (user?.role === "admin" || user?.id === loan.userId) && (
+                      (user?.role === "admin" || user?.role === "teacher") && (
                         <Button
                           size="sm"
                           variant="outline"
