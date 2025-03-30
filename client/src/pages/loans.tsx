@@ -142,7 +142,7 @@ export default function Loans() {
                 Novo Empréstimo
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
                 <DialogTitle>Criar Novo Empréstimo</DialogTitle>
                 <DialogDescription>
