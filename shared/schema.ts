@@ -40,7 +40,13 @@ export const insertUserSchema = createInsertSchema(users).pick({
 });
 
 export const insertBookSchema = createInsertSchema(books);
-export const insertLoanSchema = createInsertSchema(loans);
+export const insertLoanSchema = createInsertSchema(loans).extend({
+  userId: z.number(),
+  bookId: z.number(),
+  loanDate: z.string(),
+  dueDate: z.string(),
+  returnDate: z.string().nullable(),
+});
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
