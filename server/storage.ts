@@ -22,6 +22,40 @@ export interface IStorage {
   getLoan(id: number): Promise<Loan | undefined>;
   getAllLoans(): Promise<Loan[]>;
   updateLoan(id: number, loan: Partial<InsertLoan>): Promise<Loan>;
+
+  // Add sample books
+  constructor() {
+    this.users = new Map();
+    this.books = new Map();
+    this.loans = new Map();
+    this.currentId = 1;
+    this.sessionStore = new MemoryStore({
+      checkPeriod: 86400000,
+    });
+
+    // Adicionar alguns livros de exemplo
+    this.createBook({
+      title: "Dom Casmurro",
+      author: "Machado de Assis",
+      isbn: "9788535910682",
+      quantity: 5
+    });
+    
+    this.createBook({
+      title: "O Pequeno Príncipe",
+      author: "Antoine de Saint-Exupéry",
+      isbn: "9788574068794",
+      quantity: 3
+    });
+    
+    this.createBook({
+      title: "1984",
+      author: "George Orwell",
+      isbn: "9788535914849",
+      quantity: 4
+    });
+  }
+
   
   sessionStore: session.SessionStore;
 }
