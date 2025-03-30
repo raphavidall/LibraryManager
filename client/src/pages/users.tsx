@@ -16,6 +16,7 @@ export default function Users() {
 
   const { data: users, isLoading } = useQuery<User[]>({
     queryKey: ["/api/users"],
+    enabled: user?.role === "admin"
   });
 
   return (
