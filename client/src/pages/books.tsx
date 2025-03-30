@@ -85,18 +85,18 @@ export default function Books() {
       <NavBar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Books</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Livros</h1>
           {(user?.role === "admin" || user?.role === "teacher") && (
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Book
+                  Adicionar Livro
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>{editingBook ? "Edit Book" : "Add New Book"}</DialogTitle>
+                  <DialogTitle>{editingBook ? "Editar Livro" : "Adicionar Novo Livro"}</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

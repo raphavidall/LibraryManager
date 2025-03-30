@@ -58,10 +58,10 @@ export default function AuthPage() {
         <div className="p-6 flex items-center">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
-              Library Management System
+              Sistema de Gerenciamento de Biblioteca
             </h1>
             <p className="mt-2 text-gray-600">
-              Access and manage your library resources efficiently.
+              Acesse e gerencie os recursos da biblioteca de forma eficiente.
             </p>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function AuthPage() {
                     name="username"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>Nome de Usuário</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -94,7 +94,7 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem className="mt-4">
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>Senha</FormLabel>
                         <FormControl>
                           <Input type="password" {...field} />
                         </FormControl>
@@ -104,7 +104,7 @@ export default function AuthPage() {
                   />
                   <Button className="w-full mt-6" disabled={loginMutation.isPending}>
                     {loginMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Login
+                    Entrar
                   </Button>
                 </form>
               </Form>
@@ -118,7 +118,7 @@ export default function AuthPage() {
                     name="username"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>Nome de Usuário</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -131,7 +131,7 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem className="mt-4">
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>Senha</FormLabel>
                         <FormControl>
                           <Input type="password" {...field} />
                         </FormControl>
@@ -144,7 +144,7 @@ export default function AuthPage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem className="mt-4">
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel>Nome Completo</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -170,18 +170,18 @@ export default function AuthPage() {
                     name="role"
                     render={({ field }) => (
                       <FormItem className="mt-4">
-                        <FormLabel>Role</FormLabel>
+                        <FormLabel>Função</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select your role" />
+                              <SelectValue placeholder="Selecione sua função" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="student">Student</SelectItem>
-                            <SelectItem value="teacher">Teacher</SelectItem>
-                            <SelectItem value="admin">Administrator</SelectItem>
-                            <SelectItem value="visitor">Visitor</SelectItem>
+                            <SelectItem value="student">Estudante</SelectItem>
+                            <SelectItem value="teacher">Professor</SelectItem>
+                            <SelectItem value="admin">Administrador</SelectItem>
+                            <SelectItem value="visitor">Visitante</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -190,7 +190,7 @@ export default function AuthPage() {
                   />
                   <Button className="w-full mt-6" disabled={registerMutation.isPending}>
                     {registerMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Register
+                    Cadastrar
                   </Button>
                 </form>
               </Form>

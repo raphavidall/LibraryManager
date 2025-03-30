@@ -145,7 +145,7 @@ export default function Loans() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Criar Novo Empréstimo</DialogTitle>
+                <DialogTitle>Novo Empréstimo</DialogTitle>
                 <DialogDescription>
                   Preencha os dados abaixo para registrar um novo empréstimo.
                 </DialogDescription>
