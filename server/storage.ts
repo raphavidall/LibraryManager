@@ -43,27 +43,29 @@ export class MemStorage implements IStorage {
       checkPeriod: 86400000,
     });
 
-    // Adicionar alguns livros de exemplo
-    this.createBook({
-      title: "Dom Casmurro",
-      author: "Machado de Assis",
-      isbn: "9788535910682",
-      quantity: 5
-    });
-    
-    this.createBook({
-      title: "O Pequeno Príncipe",
-      author: "Antoine de Saint-Exupéry",
-      isbn: "9788574068794",
-      quantity: 3
-    });
-    
-    this.createBook({
-      title: "1984",
-      author: "George Orwell",
-      isbn: "9788535914849",
-      quantity: 4
-    });
+    // Dataset de livros
+    const libraryDataset = [
+      { title: "Dom Casmurro", author: "Machado de Assis", isbn: "9788535910682", quantity: 5 },
+      { title: "O Pequeno Príncipe", author: "Antoine de Saint-Exupéry", isbn: "9788574068794", quantity: 3 },
+      { title: "1984", author: "George Orwell", isbn: "9788535914849", quantity: 4 },
+      { title: "Memórias Póstumas de Brás Cubas", author: "Machado de Assis", isbn: "9788535910699", quantity: 3 },
+      { title: "O Senhor dos Anéis", author: "J.R.R. Tolkien", isbn: "9788533613379", quantity: 2 },
+      { title: "Harry Potter e a Pedra Filosofal", author: "J.K. Rowling", isbn: "9788532530783", quantity: 5 },
+      { title: "Cem Anos de Solidão", author: "Gabriel García Márquez", isbn: "9788535914849", quantity: 3 },
+      { title: "O Alquimista", author: "Paulo Coelho", isbn: "9788576655299", quantity: 4 },
+      { title: "A Metamorfose", author: "Franz Kafka", isbn: "9788535910699", quantity: 2 },
+      { title: "O Código Da Vinci", author: "Dan Brown", isbn: "9788532525781", quantity: 3 },
+      { title: "A Revolução dos Bichos", author: "George Orwell", isbn: "9788535909555", quantity: 4 },
+      { title: "O Hobbit", author: "J.R.R. Tolkien", isbn: "9788595084742", quantity: 3 },
+      { title: "A Culpa é das Estrelas", author: "John Green", isbn: "9788580573466", quantity: 4 },
+      { title: "O Nome do Vento", author: "Patrick Rothfuss", isbn: "9788599296363", quantity: 2 },
+      { title: "O Silmarillion", author: "J.R.R. Tolkien", isbn: "9788595084759", quantity: 3 }
+    ];
+
+    // Adicionar livros do dataset
+    for (const book of libraryDataset) {
+      this.createBook(book);
+    }
   }
 
   async getUser(id: number): Promise<User | undefined> {
