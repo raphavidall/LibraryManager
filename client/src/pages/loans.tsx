@@ -166,7 +166,7 @@ export default function Loans() {
                           <FormLabel>Usuário</FormLabel>
                           <FormControl>
                             <Select
-                              onValueChange={field.onChange}
+                              onValueChange={(value) => field.onChange(Number(value))}
                               defaultValue={field.value?.toString()}
                             >
                               <SelectTrigger>
