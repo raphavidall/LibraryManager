@@ -65,6 +65,7 @@ export default function Loans() {
 
   const { data: users } = useQuery<User[]>({
     queryKey: ["/api/users"],
+    enabled: user?.role === "admin" || user?.role === "teacher",
   });
 
   const form = useForm({
