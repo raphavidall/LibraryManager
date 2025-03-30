@@ -71,7 +71,7 @@ export default function Loans() {
   const form = useForm({
     resolver: zodResolver(insertLoanSchema),
     defaultValues: {
-      userId: user?.role === "admin" ? undefined : Number(user?.id),
+      userId: user?.role === "admin" ? undefined : Number(user?.id || 0),
       bookId: undefined,
       loanDate: new Date().toISOString(),
       dueDate: addDays(new Date(), 7).toISOString(),
